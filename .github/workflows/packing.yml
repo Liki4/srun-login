@@ -35,6 +35,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          go mod tidy
           GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -trimpath -ldflags "-w -s" -o srun-login-arm64 ./cmd
           file srun-login-arm64
       
