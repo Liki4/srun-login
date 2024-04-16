@@ -44,7 +44,7 @@ jobs:
         run: |
           docker buildx build -t autologin:$VERSION-arm --platform linux/arm --output=type=docker .
           docker save autologin:$VERSION-arm > autologin_$VERSION-arm.tar
-          echo "IMAGE=autologin_$VERSION-arm.tar" >> $GITHUB_ENV
+          echo "ARM_IMAGE=autologin_$VERSION-arm.tar" >> $GITHUB_ENV
           
       - name: Build arm64 Binary
         shell: bash
@@ -58,10 +58,11 @@ jobs:
         run: |
           docker buildx build -t autologin:$VERSION-arm64 --platform linux/arm64 --output=type=docker .
           docker save autologin:$VERSION-arm64 > autologin_$VERSION-arm64.tar
-          echo "IMAGE=autologin_$VERSION-arm64.tar" >> $GITHUB_ENV
+          echo "ARM64_IMAGE=autologin_$VERSION-arm64.tar" >> $GITHUB_ENV
   
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ env.IMAGE }}
+            ${{ env.ARM_IMAGE }}
+            ${{ env.ARM64_IMAGE }}
