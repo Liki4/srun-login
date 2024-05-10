@@ -1,4 +1,4 @@
-# ⚡ srun-login ![Go](https://github.com/vidar-team/srun-login/workflows/Go/badge.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/vidar-team/srun-login)](https://goreportcard.com/report/github.com/vidar-team/srun-login) [![Sourcegraph](https://img.shields.io/badge/view%20on-Sourcegraph-brightgreen.svg?logo=sourcegraph)](https://sourcegraph.com/github.com/vidar-team/srun-login)
+# ⚡ srun-login ![Go](https://github.com/Liki4/srun-login/workflows/Packing/badge.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/Liki4/srun-login)](https://goreportcard.com/report/github.com/Liki4/srun-login) [![Sourcegraph](https://img.shields.io/badge/view%20on-Sourcegraph-brightgreen.svg?logo=sourcegraph)](https://sourcegraph.com/github.com/Liki4/srun-login)
 
 杭州电子科技大学校园网 Wi-Fi 登录 / 深澜（srun）校园网模拟登录
 
