@@ -6,12 +6,12 @@ package crypotoutil
 
 import (
 	"crypto/sha1"
-	"fmt"
+	"encoding/hex"
 )
 
 func Sha1(content string) string {
 	h := sha1.New()
 	h.Write([]byte(content))
 	bs := h.Sum(nil)
-	return fmt.Sprintf("%x", bs)
+	return hex.EncodeToString(bs)
 }
