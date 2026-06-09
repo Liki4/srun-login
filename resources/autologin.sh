@@ -13,9 +13,16 @@ is_down=0
 while true; do
     sleep 20
 
-    wget -q --spider -T 3 'https://connectivitycheck.platform.hicloud.com/generate_204'
-    res="$?"
-    if [ "$res" -ne 0 ]; then
+    if
+        code=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 3 --max-time 5 --ssl-reqd 'https://connectivitycheck.platform.hicloud.com/generate_204') &&
+            [ "$code" = 204 ]
+    then
+        okay=1
+    else
+        okay=0
+    fi
+
+    if [ "$okay" -ne 1 ]; then
         {
             {
                 /bin/srun --username="$USERNAME" --password="$PASSWORD"
@@ -25,10 +32,10 @@ while true; do
     fi
     {
         date="$(date '+%Y-%m-%d %H:%M:%S')"
-        if [ "$res" -ne 0 ] && [ "$is_down" -eq 0 ]; then
+        if [ "$okay" -ne 1 ] && [ "$is_down" -eq 0 ]; then
             echo "[$date] Network DOWN"
             is_down=1
-        elif [ "$res" -eq 0 ] && [ "$is_down" -eq 1 ]; then
+        elif [ "$okay" -eq 1 ] && [ "$is_down" -eq 1 ]; then
             echo "[$date] Network UP"
             is_down=0
         fi

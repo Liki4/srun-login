@@ -19,4 +19,6 @@ COPY resources/autologin.sh /opt/autologin.sh
 
 RUN chmod +x /bin/srun /opt/autologin.sh
 
+RUN apk add --no-cache curl
+
 ENTRYPOINT ["/opt/autologin.sh", "/var/log/hdunet.log", "/var/log/hdulogin.log"]
