@@ -14,7 +14,7 @@ while true; do
     sleep 20
 
     if
-        code=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 3 --max-time 5 --ssl-reqd 'https://connectivitycheck.platform.hicloud.com/generate_204') &&
+        code="$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 3 --max-time 5 --ssl-reqd 'https://connectivitycheck.platform.hicloud.com/generate_204')" &&
             [ "$code" = 204 ]
     then
         okay=1
