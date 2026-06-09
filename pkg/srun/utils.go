@@ -6,8 +6,7 @@ package srun
 
 import (
 	"encoding/json"
-
-	"github.com/pkg/errors"
+	"fmt"
 
 	"github.com/vidar-team/srun-login/internal/crypotoutil"
 )
@@ -32,7 +31,7 @@ func (c *Client) EncodeUserInfo(challenge string) (string, error) {
 		EncVer:   "srun_bx1",
 	})
 	if err != nil {
-		return "", errors.Wrap(err, "encode JSON")
+		return "", fmt.Errorf("encode JSON: %w", err)
 	}
 
 	encode := crypotoutil.Encode(string(jsonBytes), challenge)
@@ -45,7 +44,7 @@ func (c *Client) MakeChksum(challenge string) (string, error) {
 
 	userInfo, err := c.EncodeUserInfo(challenge)
 	if err != nil {
-		return "", errors.Wrap(err, "encode user info")
+		return "", fmt.Errorf("encode user info: %w", err)
 	}
 
 	fileds := []string{

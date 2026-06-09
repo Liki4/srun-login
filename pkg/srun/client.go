@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
-
 	"github.com/vidar-team/srun-login/internal/crypotoutil"
 )
 
@@ -59,22 +57,22 @@ func (c *Client) GetChallenge() (*ChallengeResponse, error) {
 	url := fmt.Sprintf(c.host+"/cgi-bin/get_challenge?callback=_&username=%s&ip=%s", c.username, c.ip)
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, errors.Wrap(err, "http get")
+		return nil, fmt.Errorf("http get: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	responseBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err, "read response body")
+		return nil, fmt.Errorf("read response body: %w", err)
 	}
 	if len(responseBytes) < 3 {
-		return nil, errors.Errorf("unexpected response body: %q", string(responseBytes))
+		return nil, fmt.Errorf("unexpected response body: %q", string(responseBytes))
 	}
 	responseBytes = responseBytes[2 : len(responseBytes)-1]
 
 	var respJSON ChallengeResponse
 	if err := json.Unmarshal(responseBytes, &respJSON); err != nil {
-		return nil, errors.Wrap(err, "decode JSON")
+		return nil, fmt.Errorf("decode JSON: %w", err)
 	}
 
 	c.ip = respJSON.ClientIp
@@ -97,7 +95,7 @@ type PortalResponse struct {
 func (c *Client) Portal(challenge string) (*PortalResponse, error) {
 	u, err := url.Parse(c.host + "/cgi-bin/srun_portal")
 	if err != nil {
-		return nil, errors.Wrap(err, "parse URL")
+		return nil, fmt.Errorf("parse URL: %w", err)
 	}
 
 	query := url.Values{}
@@ -114,13 +112,13 @@ func (c *Client) Portal(challenge string) (*PortalResponse, error) {
 
 	userInfo, err := c.EncodeUserInfo(challenge)
 	if err != nil {
-		return nil, errors.Wrap(err, "encode user info")
+		return nil, fmt.Errorf("encode user info: %w", err)
 	}
 	query.Set("info", userInfo)
 
 	checkSum, err := c.MakeChksum(challenge)
 	if err != nil {
-		return nil, errors.Wrap(err, "make chksum")
+		return nil, fmt.Errorf("make chksum: %w", err)
 	}
 	query.Set("chksum", checkSum)
 
@@ -133,22 +131,22 @@ func (c *Client) Portal(challenge string) (*PortalResponse, error) {
 
 	resp, err := http.Get(u.String())
 	if err != nil {
-		return nil, errors.Wrap(err, "http get")
+		return nil, fmt.Errorf("http get: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 	responseBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err, "read response body")
+		return nil, fmt.Errorf("read response body: %w", err)
 	}
 	if len(responseBytes) < 3 {
-		return nil, errors.Errorf("unexpected response body: %q", string(responseBytes))
+		return nil, fmt.Errorf("unexpected response body: %q", string(responseBytes))
 	}
 
 	responseBytes = responseBytes[2 : len(responseBytes)-1]
 
 	var respJSON PortalResponse
 	if err := json.Unmarshal(responseBytes, &respJSON); err != nil {
-		return nil, errors.Wrap(err, "decode JSON")
+		return nil, fmt.Errorf("decode JSON: %w", err)
 	}
 	return &respJSON, nil
 }
