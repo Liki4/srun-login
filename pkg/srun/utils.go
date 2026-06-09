@@ -7,6 +7,7 @@ package srun
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/vidar-team/srun-login/internal/crypotoutil"
 )
@@ -47,7 +48,7 @@ func (c *Client) MakeChksum(challenge string) (string, error) {
 		return "", fmt.Errorf("encode user info: %w", err)
 	}
 
-	fileds := []string{
+	fields := []string{
 		c.username,
 		hmd5,
 		c.acID,
@@ -56,10 +57,11 @@ func (c *Client) MakeChksum(challenge string) (string, error) {
 		c.typ,
 		userInfo,
 	}
-	var str string
-	for _, f := range fileds {
-		str += challenge + f
+	var str strings.Builder
+	for _, f := range fields {
+		str.WriteString(challenge)
+		str.WriteString(f)
 	}
 
-	return crypotoutil.Sha1(str), nil
+	return crypotoutil.Sha1(str.String()), nil
 }

@@ -32,7 +32,7 @@ func main() {
 	challenge := challengeResp.Challenge
 	log.Trace("Challenge: %q", challenge)
 
-	portalResp, err := client.Portal(challengeResp.Challenge)
+	portalResp, err := client.Portal(challenge)
 	if err != nil {
 		log.Fatal("Failed to portal: %v", err)
 	}
