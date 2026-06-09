@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -u
-
 if [ "$#" -lt 2 ]; then
     echo "Usage: USERNAME=... PASSWORD=... $0 <log_file> <srun_log_file>" >&2
     exit 1
@@ -9,11 +7,13 @@ fi
 : "${USERNAME:?Error: USERNAME must be set}"
 : "${PASSWORD:?Error: PASSWORD must be set}"
 
+set -u
+
 is_down=0
 while true; do
     sleep 20
 
-    wget -q --spider -T 3 'http://connectivitycheck.platform.hicloud.com/generate_204'
+    wget -q --spider -T 3 'https://connectivitycheck.platform.hicloud.com/generate_204'
     res="$?"
     if [ "$res" -ne 0 ]; then
         {
