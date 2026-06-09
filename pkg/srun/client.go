@@ -54,8 +54,18 @@ type ChallengeResponse struct {
 
 // GetChallenge requests srun to get a challenge code.
 func (c *Client) GetChallenge() (*ChallengeResponse, error) {
-	url := fmt.Sprintf(c.host+"/cgi-bin/get_challenge?callback=_&username=%s&ip=%s", c.username, c.ip)
-	resp, err := http.Get(url)
+	u, err := url.Parse(c.host + "/cgi-bin/get_challenge")
+	if err != nil {
+		return nil, fmt.Errorf("parse URL: %w", err)
+	}
+	query := url.Values{
+		"callback": {"_"},
+		"username": {c.username},
+		"ip":       {c.ip},
+	}
+	u.RawQuery = query.Encode()
+
+	resp, err := http.Get(u.String())
 	if err != nil {
 		return nil, fmt.Errorf("http get: %w", err)
 	}
@@ -98,35 +108,31 @@ func (c *Client) Portal(challenge string) (*PortalResponse, error) {
 		return nil, fmt.Errorf("parse URL: %w", err)
 	}
 
-	query := url.Values{}
-	query.Set("callback", "_")
-	query.Set("action", "login")
-	query.Set("username", c.username)
-
 	passwordMd5 := crypotoutil.Md5(c.password, challenge)
-
-	query.Set("password", "{MD5}"+passwordMd5)
-	query.Set("os", "Mac OS")
-	query.Set("name", "Macintosh")
-	query.Set("double_stack", "0")
-
 	userInfo, err := c.EncodeUserInfo(challenge)
 	if err != nil {
 		return nil, fmt.Errorf("encode user info: %w", err)
 	}
-	query.Set("info", userInfo)
-
 	checkSum, err := c.MakeChksum(challenge)
 	if err != nil {
 		return nil, fmt.Errorf("make chksum: %w", err)
 	}
-	query.Set("chksum", checkSum)
 
-	query.Set("ac_id", c.acID)
-	query.Set("ip", c.ip)
-	query.Set("n", c.n)
-	query.Set("type", c.typ)
-
+	query := url.Values{
+		"callback":     {"_"},
+		"action":       {"login"},
+		"username":     {c.username},
+		"password":     {"{MD5}" + passwordMd5},
+		"os":           {"Mac OS"},
+		"name":         {"Macintosh"},
+		"double_stack": {"0"},
+		"info":         {userInfo},
+		"chksum":       {checkSum},
+		"ac_id":        {c.acID},
+		"ip":           {c.ip},
+		"n":            {c.n},
+		"type":         {c.typ},
+	}
 	u.RawQuery = query.Encode()
 
 	resp, err := http.Get(u.String())
