@@ -4,17 +4,12 @@
 
 2021 年暑期学校网络大改造，更换了新的深澜上网认证系统。Vidar-Team 信息安全实验室需要适配学校新的认证系统进行自动登录接入网络，因此有了本项目。
 
-## 开始使用
+## Build
+
 
 ```bash
-# 克隆项目
-git clone git@github.com:vidar-team/srun-login.git
-
-# 编译项目
-cd srun-login/cmd && go build .
-
-# 模拟登录
-./srun-login --username=<REDACTED> --password=<REDACTED>
+docker buildx build -t autologin:latest-arm64 --platform linux/arm64 --output=type=docker .
+docker save autologin:latest-arm64 > autologin-arm64.tar
 ```
 
 ## License
