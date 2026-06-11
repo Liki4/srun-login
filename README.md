@@ -8,8 +8,8 @@
 
 
 ```bash
-docker buildx build -t autologin:1.0-arm64 --platform linux/arm64 --output=type=docker .
-docker save autologin:1.0-arm64 > autologin-arm64.tar
+docker buildx build -t autologin:latest-arm64 --platform linux/arm64 --output=type=docker .
+docker save autologin:latest-arm64 > autologin-arm64.tar
 ```
 
 ## License
